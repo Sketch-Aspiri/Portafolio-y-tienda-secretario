@@ -1,0 +1,88 @@
+{
+  "$schema": "https://aka.ms/codetour-schema",
+  "title": "Setup inicial: Next.js + Tailwind + Supabase + Stripe",
+  "description": "Recorrido por el andamiaje creado en el paso 1 del roadmap: App Router, tema de marca, y los clientes de Supabase/Stripe/Resend que usará el resto del sitio.",
+  "steps": [
+    {
+      "directory": "src/app",
+      "title": "Punto de partida: App Router",
+      "description": "Todo lo que se renderiza vive bajo `src/app`. El home actual está dentro de un *route group* `(marketing)` — una carpeta entre paréntesis que organiza rutas sin agregar segmento a la URL. Así, el portafolio público puede crecer (`(marketing)/biografia`, `(marketing)/prensa`, ...) sin mezclarse con `tienda/`, `checkout/`, `citas/`, `cuenta/` o `admin/`, que ya existen como carpetas vacías esperando las siguientes fases del roadmap."
+    },
+    {
+      "file": "src/app/layout.tsx",
+      "line": 5,
+      "title": "Layout raíz: tipografías de marca",
+      "description": "`Lora` (serif institucional, para encabezados) y `Source_Sans_3` (sans-serif legible, para UI/checkout) se cargan aquí con `next/font/google` y se exponen como variables CSS (`--font-lora`, `--font-source-sans`). Se inyectan en el `<html>` en la línea 25 para que cualquier página pueda usarlas vía Tailwind. Gotcha: si agregas una fuente nueva, tiene que registrarse aquí Y mapearse en `globals.css` (siguiente parada) para que Tailwind genere la utilidad."
+    },
+    {
+      "file": "src/app/globals.css",
+      "line": 11,
+      "title": "Tema de marca: paleta como utilidades Tailwind",
+      "description": "Tailwind v4 no usa `tailwind.config.js` para colores — se declaran como variables CSS y el bloque `@theme inline` las convierte automáticamente en utilidades (`bg-primary`, `text-accent`, `font-heading`, etc.). Los cinco colores de líneas 4-8 son exactamente los del CLAUDE.md (azul marino, dorado, verde esmeralda, grafito, blanco hueso). Si el doctor pide ajustar la paleta, este es el único lugar que hay que tocar."
+    },
+    {
+      "file": "src/app/(marketing)/page.tsx",
+      "line": 7,
+      "title": "Home page usando el tema",
+      "description": "Placeholder mínimo que ya consume las utilidades generadas: `text-accent`, `text-primary`, `font-heading`. Sirve como prueba de que el tema quedó bien conectado — cuando reemplaces esto por el portafolio real, estos son los nombres de clase que vas a reutilizar en vez de hardcodear hex de nuevo."
+    },
+    {
+      "file": "src/proxy.ts",
+      "line": 4,
+      "title": "El proxy (antes 'middleware')",
+      "description": "Next.js 16 renombró la convención de `middleware.ts` a `proxy.ts` con una función exportada llamada `proxy` (no `middleware`) — usar el nombre viejo rompe silenciosamente. El `matcher` en la línea 9 excluye assets estáticos, así que corre en casi cada request. Su único trabajo hoy: delegar a `updateSession` para mantener viva la sesión de Supabase en Server Components."
+    },
+    {
+      "file": "src/lib/supabase/middleware.ts",
+      "line": 11,
+      "title": "Gotcha: arranca sin credenciales de Supabase",
+      "description": "Como el proxy corre en *cada* request, si `NEXT_PUBLIC_SUPABASE_URL`/`ANON_KEY` no están configuradas (como ahora mismo, antes de crear el proyecto en Supabase) todo el sitio devolvía 500. Este guard deja pasar la request sin refrescar sesión mientras no haya credenciales — quítalo mentalmente una vez que `.env.local` tenga valores reales, porque a partir de ahí sí se ejecuta `supabase.auth.getUser()` (línea 35) en cada navegación."
+    },
+    {
+      "file": "src/lib/supabase/client.ts",
+      "line": 3,
+      "title": "Cliente de Supabase — navegador",
+      "description": "`createBrowserClient` es para Client Components (`'use client'`): formularios de login, checkout interactivo, etc. Usa la anon key, respeta Row Level Security. Es el más simple de los tres clientes — sin manejo de cookies porque el browser ya las maneja solo."
+    },
+    {
+      "file": "src/lib/supabase/server.ts",
+      "line": 4,
+      "title": "Cliente de Supabase — Server Components",
+      "description": "Versión para Server Components y Server Actions: lee/escribe cookies vía `next/headers` (línea 5, `await cookies()` — nota que en Next 15+ es async). El `try/catch` en `setAll` (líneas 16-23) no es manejo de errores real, es un no-op documentado: si se llama desde un Server Component puro sin el proxy activo, Next.js lanza porque no se pueden setear cookies ahí — se ignora porque el proxy ya se encarga de refrescar la sesión."
+    },
+    {
+      "file": "src/lib/supabase/admin.ts",
+      "line": 8,
+      "title": "Cliente admin — bypassa RLS",
+      "description": "Usa `SUPABASE_SERVICE_ROLE_KEY` en vez de la anon key: se salta Row Level Security por completo. Por eso importa `\"server-only\"` en la línea 1 — si algún día se importa por accidente en un Client Component, el build falla en vez de filtrar la key al navegador. Uso previsto: el webhook de Stripe (para desbloquear contenido tras un pago) y otras rutas de servidor de confianza — nunca desde código que corre en el browser."
+    },
+    {
+      "file": "src/lib/stripe/client.ts",
+      "line": 4,
+      "title": "Cliente de Stripe",
+      "description": "Instancia única del SDK de servidor, con `apiVersion` fijado explícitamente (`2026-07-29.dahlia`, la que trae instalada la versión del paquete) para que un upgrade de Stripe no cambie el comportamiento en producción sin que sea una decisión explícita. También protegido con `server-only` — la secret key nunca debe llegar al bundle del cliente."
+    },
+    {
+      "file": "src/lib/email/client.ts",
+      "line": 4,
+      "title": "Cliente de Resend",
+      "description": "El más simple de los tres integradores externos. Se usará para los correos transaccionales que pide el CLAUDE.md: confirmación de compra, acceso a biblioteca, confirmación/cancelación de citas."
+    },
+    {
+      "file": ".env.example",
+      "line": 1,
+      "title": "Variables de entorno requeridas",
+      "description": "Plantilla de todo lo que hay que llenar en `.env.local` (ignorado por git) antes de que Supabase/Stripe/Resend funcionen de verdad: credenciales de los tres servicios, el link de invitación de WhatsApp (línea 15, pensado para eventualmente moverse al panel de admin) y la URL base del sitio que se usa en emails y redirects de Stripe."
+    },
+    {
+      "file": "next.config.ts",
+      "line": 4,
+      "title": "Gotcha del entorno: root de Turbopack fijado",
+      "description": "Este repo vive dentro de OneDrive y, más raro aún, hay un `package.json`/`package-lock.json` sueltos en la carpeta de usuario (`C:\\Users\\Andre`). Turbopack detecta workspaces buscando lockfiles hacia arriba y se confundía con ese archivo ajeno. Fijar `turbopack.root` al `__dirname` del proyecto elimina la ambigüedad — si en el futuro ves warnings raros de 'workspace root', este es el primer lugar a revisar."
+    },
+    {
+      "title": "Qué sigue",
+      "description": "Con esto ya puedes: correr `npm run dev` y ver el home con la marca aplicada; crear el proyecto real en Supabase y pegar las credenciales en `.env.local` para que el proxy empiece a refrescar sesiones de verdad; y usar `lib/stripe/client.ts` / `lib/email/client.ts` en cuanto ataques el checkout (paso 4 del roadmap) o las notificaciones de citas (paso 7). Las carpetas `app/tienda`, `app/checkout`, `app/citas`, `app/cuenta` y `app/admin` están vacías a propósito, esperando esas fases."
+    }
+  ]
+}
