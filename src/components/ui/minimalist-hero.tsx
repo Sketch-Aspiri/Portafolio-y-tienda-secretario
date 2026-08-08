@@ -5,9 +5,8 @@ import Link from "next/link";
 import { MotionConfig, motion } from "framer-motion";
 
 import { cn } from "@/lib/utils";
+import { EASE_OUT_EXPO } from "@/lib/motion";
 import { SOCIAL_ICONS, type SocialIconName } from "@/components/ui/social-icons";
-
-const EASE_OUT_EXPO = [0.22, 1, 0.36, 1] as const;
 
 const DELAY = {
   circle: 0.2,
@@ -18,7 +17,8 @@ const DELAY = {
 } as const;
 
 /** Anchos del disco por breakpoint; también alimentan el `sizes` de next/image. */
-const PORTRAIT_SIZES = "(min-width: 1024px) 420px, (min-width: 768px) 340px, 280px";
+const PORTRAIT_SIZES =
+  "(min-width: 1280px) 420px, (min-width: 1024px) 360px, (min-width: 768px) 300px, 280px";
 
 export interface HeroSocialLink {
   /** Nombre accesible del enlace (se lee en lectores de pantalla). */
@@ -83,7 +83,8 @@ export function MinimalistHero({
         )}
       >
         {/* Contenido principal */}
-        <div className="relative grid w-full max-w-7xl flex-grow grid-cols-1 items-center gap-12 md:grid-cols-3 md:gap-6">
+        {/* La columna central se ajusta al disco para que no invada al titular. */}
+        <div className="relative grid w-full max-w-7xl flex-grow grid-cols-1 items-center gap-12 md:grid-cols-[1fr_auto_1fr] md:gap-10 lg:gap-16">
           {/* Texto introductorio */}
           <motion.div
             initial={{ opacity: 0, y: 20 }}
@@ -117,7 +118,7 @@ export function MinimalistHero({
                 ease: EASE_OUT_EXPO,
                 delay: DELAY.circle,
               }}
-              className="relative aspect-square w-[280px] overflow-hidden rounded-full bg-accent/90 md:w-[340px] lg:w-[420px]"
+              className="relative aspect-square w-[280px] overflow-hidden rounded-full bg-accent/90 md:w-[300px] lg:w-[360px] xl:w-[420px]"
             >
               <motion.div
                 initial={{ opacity: 0, y: 40 }}
@@ -146,9 +147,9 @@ export function MinimalistHero({
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.6, delay: DELAY.title }}
-            className="z-20 order-2 flex items-center justify-center text-center md:order-3 md:justify-start md:text-left lg:-ml-10"
+            className="z-20 order-2 flex items-center justify-center text-center md:order-3 md:justify-start md:text-left"
           >
-            <h1 className="font-heading text-5xl leading-[0.95] font-bold tracking-tight text-primary sm:text-6xl md:text-5xl lg:text-6xl xl:text-7xl">
+            <h1 className="font-heading text-5xl leading-[0.95] font-bold tracking-tight text-balance text-primary sm:text-6xl md:text-4xl lg:text-5xl xl:text-7xl">
               {overlayText.part1}
               <br />
               <span className="text-accent">{overlayText.part2}</span>
@@ -161,14 +162,18 @@ export function MinimalistHero({
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.5, delay: DELAY.footer }}
-          className="z-30 mt-12 flex w-full max-w-7xl flex-col items-center gap-4 border-t border-primary/10 pt-6 sm:flex-row sm:justify-between"
+          className="z-30 mt-12 -mx-6 self-stretch border-t border-primary/10 px-6 md:-mx-12 md:px-12"
         >
-          <div className="flex items-center space-x-5">
-            {socialLinks.map((link) => (
-              <SocialIcon key={link.label} {...link} />
-            ))}
+          <div className="mx-auto flex w-full max-w-7xl flex-col items-center gap-4 pt-6 sm:flex-row sm:justify-between">
+            <div className="flex items-center space-x-5">
+              {socialLinks.map((link) => (
+                <SocialIcon key={link.label} {...link} />
+              ))}
+            </div>
+            <p className="text-sm font-medium text-foreground/70">
+              {locationText}
+            </p>
           </div>
-          <p className="text-sm font-medium text-foreground/70">{locationText}</p>
         </motion.div>
       </section>
     </MotionConfig>
