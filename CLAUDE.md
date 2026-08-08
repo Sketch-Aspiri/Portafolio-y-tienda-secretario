@@ -134,7 +134,9 @@ src/
 ## ROADMAP SUGERIDO (MVP)
 
 1. Setup del proyecto (Next.js + Tailwind + Supabase + Vercel) y estructura base. ✅
-2. Identidad visual aplicada (tema Tailwind, tipografías, componentes base).
+2. Identidad visual aplicada (tema Tailwind, tipografías, componentes base). ✅
+   > Pendiente al retomar: primitivas de UI transaccional (`Button`, `Input`/formularios)
+   > — se definirán junto al checkout (paso 4) y al agendado (paso 7).
 3. Portafolio (pendiente de contenido detallado del usuario).
 4. Catálogo de productos + checkout con Stripe (flujo de compra como invitado).
 5. Entrega de contenido digital (correo + biblioteca opcional con cuenta).

@@ -13,10 +13,10 @@ interface NavLink {
 
 const NAV_LINKS: readonly NavLink[] = [
   { label: "INICIO", href: "/" },
-  { label: "TRAYECTORIA", href: "/#trayectoria" },
+  { label: "TRAYECTORIA", href: "/trayectoria" },
   { label: "TIENDA", href: "/tienda" },
-  { label: "ASESORÍAS", href: "/citas" },
-  { label: "CONTACTO", href: "/#contacto" },
+  { label: "BLOG", href: "/blog" },
+  { label: "CONTACTO", href: "/contacto" },
 ] as const;
 
 const LINK_CLASSES =
