@@ -1,4 +1,5 @@
 import { MinimalistHero, type HeroSocialLink } from "@/components/ui/minimalist-hero";
+import { PerfilCard } from "@/components/marketing/perfil-card";
 import { TrayectoriaSection } from "@/components/marketing/trayectoria/trayectoria-section";
 import { TiendaSection } from "@/components/tienda/tienda-section";
 import { BlogSection } from "@/components/marketing/blog/blog-section";
@@ -14,11 +15,7 @@ export default function HomePage() {
     <>
       <MinimalistHero
         className="min-h-[calc(100svh-5rem)]"
-        eyebrow="Secretario General de Acuerdos · TJAAQROO"
-        mainText="Trayectoria en la justicia administrativa de Quintana Roo. Publicaciones, cursos y asesorías especializadas para la práctica jurídica."
-        readMoreLink="/trayectoria"
-        readMoreLabel="Conocer la trayectoria"
-        secondaryLink={{ href: "/tienda", label: "Visitar la tienda" }}
+        intro={<PerfilCard />}
         imageSrc="/images/secretario.png"
         imageAlt="Retrato del Dr. Luis Eduardo Anica Rodríguez"
         overlayText={{ part1: "Luis Eduardo", part2: "Anica." }}

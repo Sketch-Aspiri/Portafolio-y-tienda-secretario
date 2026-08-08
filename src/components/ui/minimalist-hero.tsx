@@ -1,7 +1,7 @@
 "use client";
 
+import type { ReactNode } from "react";
 import Image from "next/image";
-import Link from "next/link";
 import { MotionConfig, motion } from "framer-motion";
 
 import { cn } from "@/lib/utils";
@@ -27,19 +27,9 @@ export interface HeroSocialLink {
   href: string;
 }
 
-export interface HeroLink {
-  href: string;
-  label: string;
-}
-
 export interface MinimalistHeroProps {
-  /** Texto breve sobre el párrafo introductorio (cargo, institución). */
-  eyebrow?: string;
-  mainText: string;
-  readMoreLink: string;
-  readMoreLabel?: string;
-  /** Enlace secundario, debajo del principal. */
-  secondaryLink?: HeroLink;
+  /** Bloque de presentación junto al retrato: texto, ficha o lo que toque. */
+  intro?: ReactNode;
   /** Ruta de la fotografía del retrato. */
   imageSrc: string;
   imageAlt: string;
@@ -70,11 +60,7 @@ function SocialIcon({ href, label, icon }: HeroSocialLink) {
 }
 
 export function MinimalistHero({
-  eyebrow,
-  mainText,
-  readMoreLink,
-  readMoreLabel = "Conocer más",
-  secondaryLink,
+  intro,
   imageSrc,
   imageAlt,
   overlayText,
@@ -93,38 +79,14 @@ export function MinimalistHero({
         {/* Contenido principal */}
         {/* La columna central se ajusta al disco para que no invada al titular. */}
         <div className="relative grid w-full max-w-7xl flex-grow grid-cols-1 items-center gap-12 md:grid-cols-[1fr_auto_1fr] md:gap-10 lg:gap-16">
-          {/* Texto introductorio */}
+          {/* Presentación */}
           <motion.div
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.6, delay: DELAY.intro }}
-            className="z-20 order-3 text-center md:order-1 md:text-left"
+            className="z-20 order-3 flex h-full flex-col items-center justify-center text-center md:order-1 md:items-start md:text-left"
           >
-            {eyebrow ? (
-              <p className="mb-3 text-xs font-semibold tracking-[0.2em] text-accent uppercase">
-                {eyebrow}
-              </p>
-            ) : null}
-            <p className="mx-auto max-w-xs text-sm leading-relaxed text-foreground/80 md:mx-0">
-              {mainText}
-            </p>
-            <div className="mt-5 flex flex-col items-center gap-2.5 md:items-start">
-              <Link
-                href={readMoreLink}
-                className="text-sm font-semibold text-primary underline decoration-accent decoration-2 underline-offset-4 transition-colors hover:text-accent"
-              >
-                {readMoreLabel}
-              </Link>
-
-              {secondaryLink ? (
-                <Link
-                  href={secondaryLink.href}
-                  className="text-sm font-semibold text-foreground/60 underline decoration-primary/20 decoration-2 underline-offset-4 transition-colors hover:text-accent hover:decoration-accent"
-                >
-                  {secondaryLink.label}
-                </Link>
-              ) : null}
-            </div>
+            {intro}
           </motion.div>
 
           {/* Retrato enmarcado en el disco dorado */}

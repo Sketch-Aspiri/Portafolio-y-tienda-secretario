@@ -2,8 +2,9 @@ import Link from "next/link";
 import { ArrowRight } from "lucide-react";
 
 import { POSTS_DESTACADOS } from "@/content/blog";
+import { CardSwipe } from "@/components/ui/card-swipe";
 import { Reveal } from "@/components/ui/reveal";
-import { BlogLista } from "./blog-lista";
+import { PostCard } from "./post-card";
 
 function Introduccion() {
   return (
@@ -45,7 +46,11 @@ export function BlogSection() {
 
         <Reveal>
           <div className="flex w-full flex-col items-center">
-            <BlogLista posts={POSTS_DESTACADOS} className="w-full" />
+            <CardSwipe label="Entradas destacadas del blog">
+              {POSTS_DESTACADOS.map((post) => (
+                <PostCard key={post.slug} post={post} />
+              ))}
+            </CardSwipe>
 
             <Link
               href="/blog"
