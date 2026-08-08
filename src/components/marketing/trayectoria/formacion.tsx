@@ -1,6 +1,6 @@
 import { DIPLOMADOS, FORMACION } from "@/content/trayectoria";
 import { HoverExpand, type HoverExpandItem } from "@/components/ui/hover-expand";
-import { BloqueTitulo } from "./bloque-titulo";
+import { BloqueTitulo } from "@/components/ui/bloque-titulo";
 
 /** Niveles de mayor a menor, y los diplomados al final como bloque aparte. */
 const NIVELES: HoverExpandItem[] = [

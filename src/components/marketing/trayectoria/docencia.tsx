@@ -1,6 +1,6 @@
 import { DOCENCIA } from "@/content/trayectoria";
 import { HoverExpand, type HoverExpandItem } from "@/components/ui/hover-expand";
-import { BloqueTitulo } from "./bloque-titulo";
+import { BloqueTitulo } from "@/components/ui/bloque-titulo";
 
 const BLOQUES: HoverExpandItem[] = [
   {

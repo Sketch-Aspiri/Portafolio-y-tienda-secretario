@@ -6,7 +6,7 @@ interface BloqueTituloProps {
   align?: "left" | "center";
 }
 
-/** Encabezado de cada bloque interno de la trayectoria (regla dorada + serif). */
+/** Encabezado de cada bloque interno de una sección (regla dorada + serif). */
 export function BloqueTitulo({
   titulo,
   descripcion,

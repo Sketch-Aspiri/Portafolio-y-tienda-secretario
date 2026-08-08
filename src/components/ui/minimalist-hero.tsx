@@ -27,12 +27,19 @@ export interface HeroSocialLink {
   href: string;
 }
 
+export interface HeroLink {
+  href: string;
+  label: string;
+}
+
 export interface MinimalistHeroProps {
   /** Texto breve sobre el párrafo introductorio (cargo, institución). */
   eyebrow?: string;
   mainText: string;
   readMoreLink: string;
   readMoreLabel?: string;
+  /** Enlace secundario, debajo del principal. */
+  secondaryLink?: HeroLink;
   /** Ruta de la fotografía del retrato. */
   imageSrc: string;
   imageAlt: string;
@@ -67,6 +74,7 @@ export function MinimalistHero({
   mainText,
   readMoreLink,
   readMoreLabel = "Conocer más",
+  secondaryLink,
   imageSrc,
   imageAlt,
   overlayText,
@@ -100,12 +108,23 @@ export function MinimalistHero({
             <p className="mx-auto max-w-xs text-sm leading-relaxed text-foreground/80 md:mx-0">
               {mainText}
             </p>
-            <Link
-              href={readMoreLink}
-              className="mt-5 inline-block text-sm font-semibold text-primary underline decoration-accent decoration-2 underline-offset-4 transition-colors hover:text-accent"
-            >
-              {readMoreLabel}
-            </Link>
+            <div className="mt-5 flex flex-col items-center gap-2.5 md:items-start">
+              <Link
+                href={readMoreLink}
+                className="text-sm font-semibold text-primary underline decoration-accent decoration-2 underline-offset-4 transition-colors hover:text-accent"
+              >
+                {readMoreLabel}
+              </Link>
+
+              {secondaryLink ? (
+                <Link
+                  href={secondaryLink.href}
+                  className="text-sm font-semibold text-foreground/60 underline decoration-primary/20 decoration-2 underline-offset-4 transition-colors hover:text-accent hover:decoration-accent"
+                >
+                  {secondaryLink.label}
+                </Link>
+              ) : null}
+            </div>
           </motion.div>
 
           {/* Retrato enmarcado en el disco dorado */}
@@ -136,7 +155,9 @@ export function MinimalistHero({
                   fill
                   sizes={PORTRAIT_SIZES}
                   priority
-                  className="translate-y-[4%] scale-90 object-contain object-bottom"
+                  /* `scale-90` sube el borde inferior un 5%; el desplazamiento
+                     lo compensa para que el retrato llegue al filo del disco. */
+                  className="translate-y-[7%] scale-90 object-contain object-bottom"
                 />
               </motion.div>
             </motion.div>
