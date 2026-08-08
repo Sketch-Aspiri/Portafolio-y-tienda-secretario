@@ -1,15 +1,15 @@
 import type { Metadata } from "next";
-import { Lora, Source_Sans_3, Geist } from "next/font/google";
+import { Lora, Source_Sans_3 } from "next/font/google";
 import "./globals.css";
 import { cn } from "@/lib/utils";
 
-const geist = Geist({subsets:['latin'],variable:'--font-sans'});
-
+/** Serif de los encabezados: tradición y carácter institucional. */
 const lora = Lora({
   variable: "--font-lora",
   subsets: ["latin"],
 });
 
+/** Sans-serif del cuerpo, formularios y checkout. */
 const sourceSans = Source_Sans_3({
   variable: "--font-source-sans",
   subsets: ["latin"],
@@ -25,7 +25,11 @@ export default function RootLayout({ children }: LayoutProps<"/">) {
   return (
     <html
       lang="es"
-      className={cn("h-full", "antialiased", lora.variable, sourceSans.variable, "font-sans", geist.variable)}
+      className={cn(
+        "h-full antialiased font-sans",
+        lora.variable,
+        sourceSans.variable,
+      )}
     >
       <body className="min-h-full flex flex-col font-sans">{children}</body>
     </html>

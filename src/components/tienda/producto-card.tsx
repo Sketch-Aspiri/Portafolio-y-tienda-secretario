@@ -1,7 +1,7 @@
 import { nombreCategoria } from "@/content/tienda";
 import { formatearPrecio, periodicidad } from "@/lib/precio";
 import type { Producto, TipoEntrega } from "@/types/tienda";
-import { ExpandableProfileCard } from "@/components/watermelon-ui/expandable-profile-card";
+import { ExpandableProfileCard } from "@/components/ui/expandable-profile-card";
 
 /** Cómo llega el producto al cliente, dicho en una línea dentro de la ficha. */
 const ENTREGA_LABELS = {
